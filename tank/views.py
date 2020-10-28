@@ -6,6 +6,47 @@ from rest_framework import status
 from tank.models import Tank
 from tank.serializers import TankSerializer
 
+from rest_framework import generics
+
+
+class TankListCreateView(generics.ListCreateAPIView):
+    queryset = Tank.objects.all()
+    serializer_class = TankSerializer
+    lookup_field = 'id'
+
+    def create(self,request):
+        serializer = TankSerializer(data = request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+
+            tank = Tank.objects.create(
+                        tank_name= data.get('tank_name'),
+                        product = data.get('product'),
+                        capacity = data.get("capacity"),
+                        owner_id = request.user
+            )
+
+            serialized_data = TankSerializer(tank).data
+            
+            return Response(serialized_data,status=status.HTTP_201_CREATED)
+        return Response({"message":"invalid data","data":request.data},status=status.HTTP_400_BAD_REQUEST)
+
+
+class TankDetailUpdateView(generics.RetrieveUpdateAPIView):
+    
+    queryset = Tank.objects.all()
+    serializer_class = TankSerializer
+    # permission_classes = [IsAdminUser]
+    lookup_field = 'id'
+    
+
+
+
+
+
+
+
+
 
 
 

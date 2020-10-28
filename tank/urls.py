@@ -1,7 +1,11 @@
 from django.urls import path
-from tank.views import TankView
+from tank.views import (
+    TankView,
+    TankListCreateView,
+    TankDetailUpdateView
+    )
 
 urlpatterns = [
-    path('', TankView,name="tank"),
-    path('<int:id>', TankView,name="Tank_details")
+    path('<int:id>', TankDetailUpdateView.as_view(),name="tank_details"),
+    path('', TankListCreateView.as_view(),name="tank")
 ]
